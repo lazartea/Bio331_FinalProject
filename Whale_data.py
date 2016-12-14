@@ -1,20 +1,11 @@
 import networkx as nx
 import graphspace_utils
-import json_utils
+
 from operator import itemgetter
 import matplotlib.pyplot as plt
 import math
-G = nx.read_gml("mw_thesisgraph.gml",)
+G = nx.read_gml("mw_thesisgraph.gml",) #this reads Michael's graph into a useable networkx format
 
-
-
-
-# nodes = G.nodes()
-
-# edges = G.edges()
-# data = json_utils.make_json_data(nodes,edges,'Whales','desc',['Tag'])
-# json_utils.write_json(data,'whales.json')
-# graphspace_utils.postGraph('Whales','whales.json','lazartea@reed.edu','AmyR0se')
 
 d = {}
 for node in G.nodes():
@@ -22,6 +13,7 @@ for node in G.nodes():
     d[str(attr[0])] = attr[1]
 print(G.nodes())
 
+#these plots were used to produce scatterplots of the baseline centrality measures
 
 close = nx.closeness_centrality(G,u=None,distance=None,normalized=True)
 close_node = []
@@ -76,7 +68,8 @@ def plot(prefix,x,y,labels):
   
 #plot("In Degreee centrality",in_deg_node,in_deg_val,in_deg_label)
 
-def centrality(G): #input a graph G
+def centrality(G): #input: a networkx graph G
+                   #output:
   degree = nx.degree_centrality(G)
   
   
@@ -86,7 +79,8 @@ def centrality(G): #input a graph G
   return [degree,close,between]
 
 
-def NodeRemoval(G): #input a graph G
+def NodeRemoval(G): #input: a networkx graph G
+                    #output: a list of dictionaries for three centrality measures of each graph that has been created through removing indiv. nodes
   listCent = {}
   for n in G.nodes(): #iterate through each node in the graph
     removedEdge = []
@@ -108,16 +102,17 @@ def NodeRemoval(G): #input a graph G
 y = centrality(G)
 x = NodeRemoval(G)
 
-def Comparison(G_Cent,ind_cent): #input: centrality measures for 
+def Comparison(G_Cent,ind_cent): #input: baseline centrality measures for a graph, centrality measures for each version of the graph with a node removed
+                                 #output: a list of nodes in order of the change that it's removal caused
   
   full_ls = []
   for key in ind_cent:
     for item in range(3):
       change = {}
-      x = ind_cent[key][item]
+      x = ind_cent[key][item] 
 
       for key1 in x:
-        change[key1] = abs(x[key1]-G_Cent[item][key1])
+        change[key1] = abs(x[key1]-G_Cent[item][key1]) #finds absolute value of centrality measure's change
 
       mean = 0   
       for k in change:
