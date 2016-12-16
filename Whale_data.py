@@ -102,7 +102,7 @@ def NodeRemoval(G): #input: a networkx graph G
 y = centrality(G)
 x = NodeRemoval(G)
 
-def Comparison(G_Cent,ind_cent): #input: baseline centrality measures for a graph, centrality measures for each version of the graph with a node removed
+def Comparison(G_Cent,ind_cent,per): #input: baseline centrality measures for a graph, centrality measures for each version of the graph with a node removed, list of baseline centrality measures means
                                  #output: a list of nodes in order of the change that it's removal caused
   
   full_ls = []
@@ -125,7 +125,15 @@ def Comparison(G_Cent,ind_cent): #input: baseline centrality measures for a grap
         full_ls.append([key,"close",change,mean])
       if item == 2:
         full_ls.append([key,"between",change,mean])
-  
+       
+  for item in full_ls:
+    if item[1] == "degree":
+      item[3] = (item[3]-per[0]/per[0]) * 100 #percent change formula 
+    if item[1] == "close":
+      item[3] = (item[3]-per[1]/per[1]) * 100
+    if item[1] == "between":
+      item[3] = (item[3]-per[2]/per[2]) * 100
+
   full_ls = sorted(full_ls, key=itemgetter(3)) #sorts items from smallest mean change to biggest
   for item in full_ls:
     print item
@@ -136,7 +144,17 @@ def Comparison(G_Cent,ind_cent): #input: baseline centrality measures for a grap
   return 
 
 
-
+#this function was added to compute the mean of each baseline centrality measure
+#input: a list of dictonaries with centrality measures as values and nodes as keys
+#output: a list of each dictionary's mean
+def baselineCal(lst):
+  ls = []
+  for item in lst: 
+    t = 0
+    for key in item:
+      t += item[key]
+    ls.append(t/(int(len(item))))
+  return ls
 
 
 
